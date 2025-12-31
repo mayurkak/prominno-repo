@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
+use Illuminate\Support\Facades\Log;
 class AdminController extends Controller
 {
     public function createSeller(CreateSellerRequest $request): JsonResponse
@@ -31,6 +31,7 @@ class AdminController extends Controller
                 'data'    => $user
             ], 201);
         } catch (\Exception $e) {
+            Log::error("Seller Creation Error: " . $e->getMessage());
             return response()->json([
                 'status'  => false,
                 'message' => 'Failed to create seller.',
@@ -78,7 +79,6 @@ class AdminController extends Controller
 
             $data['role'] = 'seller';
 
-            // Hash password
             $data['password'] = Hash::make($data['password']);
 
             $seller = User::create($data);

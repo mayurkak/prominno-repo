@@ -59,16 +59,13 @@ class AuthController extends Controller
     }
     public function sellerLogin(Request $request)
     {
-        // Validate request input
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        // 1. Find the user by email
         $user = User::where('email', $request->email)->first();
 
-        // 2. Validate credentials and ROLE
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
                 'status' => false,
@@ -76,7 +73,6 @@ class AuthController extends Controller
             ], 401);
         }
 
-        // 3. Strict Check: Ensure the user is a seller
         if ($user->role !== 'seller') {
             return response()->json([
                 'status' => false,
@@ -84,7 +80,6 @@ class AuthController extends Controller
             ], 403);
         }
 
-        // 4. Generate Sanctum Token
         $token = $user->createToken('seller_auth_token')->plainTextToken;
 
         return response()->json([
@@ -92,7 +87,7 @@ class AuthController extends Controller
             'message' => 'Seller logged in successfully',
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'role' => $user->role, // Returning Role as per requirement
+            'role' => $user->role,
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,

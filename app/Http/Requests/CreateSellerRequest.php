@@ -31,4 +31,12 @@ class CreateSellerRequest extends FormRequest
             'password'  => 'required|string|min:8',
         ];
     }
+    public function messages(): array
+    {
+        return [
+            'email.unique'     => 'This email address is already registered.',
+            'mobile_no.unique' => 'This mobile number is already in use.',
+            'mobile_no.digits' => 'The mobile number must be exactly 10 digits.',
+        ];
+    }
 }
